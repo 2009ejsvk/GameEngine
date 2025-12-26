@@ -1,0 +1,46 @@
+#pragma once
+
+#include "Object/GameObject.h"
+#include "../Interface/StateInterface.h"
+
+class CMonster :
+    public CGameObject,
+	public CStateInterface
+{
+	friend class CWorld;
+	friend class CObject;
+
+protected:
+	CMonster();
+	CMonster(const CMonster& ref);
+	CMonster(CMonster&& ref)	noexcept;
+
+public:
+	virtual ~CMonster();
+
+private:
+	std::weak_ptr<class CMeshComponent>	mMeshComponent;
+	std::weak_ptr<class CStateComponent>	mStateComponent;
+	float	mFireTime = 0.f;
+	std::weak_ptr<CGameObject>	mTargetObject;
+	float	mDetectRange = 400.f;
+	int		mHP = 10;
+
+public:
+	void Damage(int Dmg)
+	{
+		mHP -= Dmg;
+
+		char	Test[256] = {};
+		sprintf_s(Test, "HP : %d\n", mHP);
+		OutputDebugStringA(Test);
+	}
+
+public:
+	virtual bool Init();
+	virtual void Update(float DeltaTime);
+
+protected:
+	virtual CMonster* Clone();
+};
+
